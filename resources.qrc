@@ -1,0 +1,6 @@
+<RCC>
+  <qresource>
+    <file>ui/icons/icon.png</file>
+    <file>ui/icons/backround.jpg</file>
+  </qresource>
+</RCC>

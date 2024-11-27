@@ -1,0 +1,14 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environment directory
+.venv/
+resources.qrc
+
+# Ignore other common temporary or cache files
+.idea/
+.vscode/
+*.log
+*.swp
