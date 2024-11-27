@@ -40,7 +40,7 @@ Ensure you have the following installed:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/<your-username>/algorithm-visualizer.git
+   git clone https://github.com/AngryGranny01/algorithm-visualizer.git
    cd algorithm-visualizer
    ```
 
