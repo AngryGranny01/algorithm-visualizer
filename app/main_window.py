@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QGraphicsScene, QTreeWidgetItem
+from PySide6.QtWidgets import QMainWindow, QGraphicsScene, QTreeWidgetItem, QPushButton
 from PySide6.QtCore import QTimer, Qt
 from app.logic.sorting.bubble_sort_stepper import BubbleSortStepper
 from app.logic.sorting.quick_sort_stepper import QuickSortStepper
@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self.sort_timer.timeout.connect(self.process_next_step)
 
         self.current_delay = 1500  # Delay in milliseconds between steps
+        self.paused = True  # To handle play/pause functionality
 
         # Define algorithm mapping
         self.algorithms = {
@@ -83,6 +84,12 @@ class MainWindow(QMainWindow):
         self.populate_tree()
         self.ui.treeAlgorithms.itemClicked.connect(self.on_algorithm_selected)
 
+        # Connect button actions
+        self.ui.btnStart.clicked.connect(self.start_visualization)
+        self.ui.btnStop.clicked.connect(self.stop_visualization)
+        self.ui.btnStepForward.clicked.connect(self.step_forward)
+        self.ui.btnStepBackward.clicked.connect(self.step_backward)
+
     def populate_tree(self):
         sorting_category = QTreeWidgetItem(self.ui.treeAlgorithms)
         sorting_category.setText(0, "Sorting")
@@ -129,7 +136,24 @@ class MainWindow(QMainWindow):
             else:
                 self.sort_stepper = algorithm_config["stepper"](array)
 
-        self.sort_timer.start(self.current_delay)
+    def start_visualization(self):
+        if self.sort_stepper and self.paused:
+            self.paused = False
+            self.sort_timer.start(self.current_delay)
+
+    def stop_visualization(self):
+        if self.sort_stepper and not self.paused:
+            self.paused = True
+            self.sort_timer.stop()
+
+    def step_forward(self):
+        if self.sort_stepper:
+            self.process_next_step()
+
+    def step_backward(self):
+        if self.sort_stepper and hasattr(self.sort_stepper, "reset"):
+            self.sort_stepper.reset()
+            self.ui.textDescription.setPlainText("Stepped backward.")
 
     def process_next_step(self):
         if self.sort_stepper:
@@ -170,8 +194,6 @@ class MainWindow(QMainWindow):
                 else:
                     self.sort_timer.stop()
                     self.ui.textDescription.append(f"Sorting complete! Sorted array: {self.sort_stepper.arr}")
-
-
 
     def _log_steps(self, step_log):
         if isinstance(step_log, str):

@@ -17,7 +17,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QGraphicsView, QHBoxLayout, QHeaderView,
-    QMainWindow, QMenu, QMenuBar, QPlainTextEdit,
+    QMainWindow, QMenu, QMenuBar, QPushButton,
     QSizePolicy, QStatusBar, QTextEdit, QTreeWidget,
     QTreeWidgetItem, QVBoxLayout, QWidget)
 
@@ -49,6 +49,43 @@ class Ui_MainWindow(object):
 
         self.centerLayout.addWidget(self.graphicsView)
 
+        self.controlLayout = QHBoxLayout()
+        self.controlLayout.setObjectName(u"controlLayout")
+        self.btnStart = QPushButton(self.centralwidget)
+        self.btnStart.setObjectName(u"btnStart")
+        icon = QIcon()
+        icon.addFile(u"ui/icons/play_button.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.btnStart.setIcon(icon)
+
+        self.controlLayout.addWidget(self.btnStart)
+
+        self.btnStop = QPushButton(self.centralwidget)
+        self.btnStop.setObjectName(u"btnStop")
+        icon1 = QIcon()
+        icon1.addFile(u"ui/icons/stop_button.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.btnStop.setIcon(icon1)
+
+        self.controlLayout.addWidget(self.btnStop)
+
+        self.btnStepForward = QPushButton(self.centralwidget)
+        self.btnStepForward.setObjectName(u"btnStepForward")
+        icon2 = QIcon()
+        icon2.addFile(u"ui/icons/arrow_right_button.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.btnStepForward.setIcon(icon2)
+
+        self.controlLayout.addWidget(self.btnStepForward)
+
+        self.btnStepBackward = QPushButton(self.centralwidget)
+        self.btnStepBackward.setObjectName(u"btnStepBackward")
+        icon3 = QIcon()
+        icon3.addFile(u"ui/icons/arrow_left_button.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.btnStepBackward.setIcon(icon3)
+
+        self.controlLayout.addWidget(self.btnStepBackward)
+
+
+        self.centerLayout.addLayout(self.controlLayout)
+
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.textDescription = QTextEdit(self.centralwidget)
@@ -56,11 +93,6 @@ class Ui_MainWindow(object):
         self.textDescription.setReadOnly(True)
 
         self.horizontalLayout.addWidget(self.textDescription)
-
-        self.plainTextEdit = QPlainTextEdit(self.centralwidget)
-        self.plainTextEdit.setObjectName(u"plainTextEdit")
-
-        self.horizontalLayout.addWidget(self.plainTextEdit)
 
 
         self.centerLayout.addLayout(self.horizontalLayout)
@@ -91,6 +123,10 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Algorithm Visualizer", None))
+        self.btnStart.setText(QCoreApplication.translate("MainWindow", u"Start", None))
+        self.btnStop.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
+        self.btnStepForward.setText(QCoreApplication.translate("MainWindow", u"Step Forward", None))
+        self.btnStepBackward.setText(QCoreApplication.translate("MainWindow", u"Step Backward", None))
         self.textDescription.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Algorithm Description or Logs...", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
