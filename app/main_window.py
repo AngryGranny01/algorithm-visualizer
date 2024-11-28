@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         self.sort_timer = QTimer(self)
         self.sort_timer.timeout.connect(self.process_next_step)
 
-        self.current_delay = 3000  # Delay in milliseconds between steps
+        self.current_delay = 1500  # Delay in milliseconds between steps
 
         # Define algorithm mapping
         self.algorithms = {
@@ -112,8 +112,8 @@ class MainWindow(QMainWindow):
             self.sort_stepper = algorithm_config["stepper"](graph, start_node)
             self.ui.textDescription.setPlainText(f"Starting {algorithm_name} from node {start_node}")
 
-            # Set graph visualizer scene
-            self.graph_visualizer.set_graph(graph)
+            # Draw the graph as a tree
+            self.graph_visualizer.set_graph(graph, root=start_node)
             self.ui.graphicsView.setScene(self.graph_visualizer_scene)
         else:
             array = algorithm_config["array"]
@@ -135,31 +135,43 @@ class MainWindow(QMainWindow):
         if self.sort_stepper:
             if isinstance(self.sort_stepper, (BreadthFirstSearchStepper, DepthFirstSearchStepper)):
                 if not self.sort_stepper.is_complete():
+                    # Perform the next step in the traversal
                     step_log = self.sort_stepper.step()
                     self._log_steps(step_log)
 
-                    # Update graph visualizer
-                    current_node = self.sort_stepper.get_current_node()
-                    visited = self.sort_stepper.get_visited_order()
-                    self.graph_visualizer.highlight_node(current_node, Qt.red)
-                    for node in visited:
+                    # Get the last visited node (current node being processed)
+                    current_node = self.sort_stepper.visited_order[-1] if self.sort_stepper.visited_order else None
+                    if current_node is not None:
+                        self.graph_visualizer.highlight_node(current_node, Qt.red)
+
+                    # Highlight previously visited nodes
+                    for node in self.sort_stepper.visited_order[:-1]:
                         self.graph_visualizer.highlight_node(node, Qt.green)
                 else:
+                    # Traversal is complete
                     self.sort_timer.stop()
                     self.ui.textDescription.append(f"Traversal complete! Visited order: {self.sort_stepper.get_visited_order()}")
+
+                    # Highlight the last node in green
+                    if self.sort_stepper.visited_order:
+                        last_node = self.sort_stepper.visited_order[-1]
+                        self.graph_visualizer.highlight_last_node(last_node, Qt.green)
             else:
                 if not self.sort_stepper.is_sorted():
-                    step_log, highlights = self.sort_stepper.step()  # Unpack log and highlights
+                    # Perform the next step in the sorting process
+                    step_log, highlights = self.sort_stepper.step()
                     self._log_steps(step_log)
 
-                    # Update sorting visualizer with the highlights
+                    # Update sorting visualizer with highlights
                     self.sort_visualizer.update_array(
                         self.sort_stepper.arr,
-                        highlights=highlights  # Pass the dictionary directly
+                        highlights=highlights
                     )
                 else:
                     self.sort_timer.stop()
                     self.ui.textDescription.append(f"Sorting complete! Sorted array: {self.sort_stepper.arr}")
+
+
 
     def _log_steps(self, step_log):
         if isinstance(step_log, str):
